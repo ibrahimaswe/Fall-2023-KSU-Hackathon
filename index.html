@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<h1>Geolocation</h1>
+
+<button onclick="getLocation()">Get current location</button>
+
+<p id="demo"></p>
+
+<script>
+    function getLocation() {
+        if ("geolocation" in navigator) {
+            // Geolocation is available
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var latitude = position.coords.latitude;
+                var longitude = position.coords.longitude;
+
+                // Construct the API URL for reverse geocoding
+                var apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+
+                // Make a GET request to the Nominatim API
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        var county = data.address.county;
+                        document.getElementById("demo").innerHTML = "County: " + county;
+                    })
+                    .catch(error => {
+                        console.error("Error fetching data:", error);
+                        document.getElementById("demo").innerHTML = "Error fetching county data";
+                    });
+            });
+        } else {
+            // Geolocation is not available in this browser
+            document.getElementById("demo").innerHTML = "Geolocation is not supported: ";
+        }
+    }
+</script>
+
+</body>
+</html>
+
+
+
